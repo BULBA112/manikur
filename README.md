@@ -24,7 +24,7 @@ npm install
 
 3. Запустите сервер:
 ```bash
-node server.js
+node server.js      
 ```
 
 4. Откройте `index.html` через Live Server или другой локальный веб-сервер.

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мастер по маникюру</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
     <header>
@@ -49,22 +50,33 @@
     </section>
     <section id="booking">
         <h2>Онлайн-запись</h2>
-        <form id="bookingForm">
+        <div class="calendar-navigation">
+            <button id="prevWeekBtn"><< Предыдущая неделя</button>
+            <div id="currentMonthYear" class="current-month-year"></div>
+            <button id="nextWeekBtn">Следующая неделя >></button>
+        </div>
+        <div id="calendar" class="booking-calendar"></div>
+        <form id="bookingForm" style="display: none;">
+            <h3>Заполните данные для записи</h3>
             <label>Имя:<br><input type="text" name="name" required></label><br>
             <label>Телефон:<br><input type="tel" name="phone" required></label><br>
-            <label>Дата:<br><input type="date" name="date" required></label><br>
-            <label>Время:<br><input type="time" name="time" required></label><br>
+            <label>Ник в Telegram:<br><input type="text" name="telegramUsername" placeholder="@ваш_ник" required></label><br>
+            <label>Услуга:<br>
+                <select name="service" required>
+                    <option value="">Выберите услугу</option>
+                    <option value="Маникюр с покрытием гель-лак">Маникюр с покрытием гель-лак (1300 руб.)</option>
+                    <option value="Педикюр обработка ногтей - гель лак">Педикюр обработка ногтей - гель лак (1400 руб.)</option>
+                    <option value="Педикюр обработка стоп - гель лак">Педикюр обработка стоп - гель лак (1700 руб.)</option>
+                    <option value="Маникюр наращивания">Маникюр наращивания (от 1700 руб.)</option>
+                    <option value="маникюр с укреплением">Маникюр с укреплением (1500 руб.)</option>
+                </select>
+            </label><br>
+            <label>Дата:<br><input type="date" name="date" required readonly></label><br>
+            <label>Время:<br><select name="time" required></select></label><br>
             <button type="submit">Записаться</button>
         </form>
         <div id="bookingError" style="color:red; display:none;"></div>
         <div id="bookingSuccess" style="display:none;">Спасибо за запись! Я свяжусь с вами для подтверждения.</div>
-        <h3>Занятые слоты</h3>
-        <table id="bookingsTable" style="width:100%; border-collapse:collapse;">
-            <thead>
-                <tr><th>Имя</th><th>Дата</th><th>Время</th></tr>
-            </thead>
-            <tbody></tbody>
-        </table>
     </section>
     <section id="contacts">
         <h2>Контакты</h2>
@@ -75,6 +87,10 @@
     <footer>
         <p>Сайт делал @Terorist_bulba (телеграм) </p>
     </footer>
+    <div class="location-widget">
+        <div id="map" style="width: 100%; height: 100%;"></div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="booking.js"></script>
 </body>
 </html> 

@@ -16,6 +16,54 @@ app.use(bodyParser.json());
 // Хранилище записей (в памяти)
 let bookings = [];
 
+const timeSlots = [
+    '10:00', '11:00', '12:00', '13:00', '14:00',
+    '15:00', '16:00', '17:00', '18:00', '19:00'
+];
+
+function getNext14Days() {
+    const dates = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (let i = 0; i < 14; i++) {
+        const current = new Date(today);
+        current.setDate(today.getDate() + i);
+        dates.push(current.toISOString().split('T')[0]);
+    }
+    return dates;
+}
+
+function generateSlotsStatusTable(allBookings) {
+    let message = 'Текущий статус занятости:\n```\n';
+    const dates = getNext14Days();
+
+    // Создаем заголовок таблицы
+    let header = 'Время';
+    dates.forEach(date => {
+        const d = new Date(date);
+        header += ` | ${d.toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric' })}`;
+    });
+    message += `${header}\n`;
+
+    // Разделитель
+    let separator = '------';
+    dates.forEach(() => { separator += ' | -------'; });
+    message += `${separator}\n`;
+
+    // Заполняем строки для каждого временного слота
+    timeSlots.forEach(slotTime => {
+        let row = slotTime;
+        dates.forEach(date => {
+            const isBooked = allBookings.some(b => b.date === date && b.time === slotTime);
+            row += ` | ${isBooked ? 'Занято' : 'Свободно'}`;
+        });
+        message += `${row}\n`;
+    });
+
+    message += '```';
+    return message;
+}
+
 // Получить все записи
 app.get('/bookings', (req, res) => {
     res.json(bookings);
@@ -23,21 +71,32 @@ app.get('/bookings', (req, res) => {
 
 // Добавить новую запись
 app.post('/book', async (req, res) => {
-    const { name, phone, service, date, time } = req.body;
+    const { name, phone, service, date, time, telegramUsername } = req.body;
     // Проверка на занятость
     const exists = bookings.find(b => b.date === date && b.time === time);
     if (exists) {
         return res.status(409).json({ error: 'Слот уже занят' });
     }
-    const booking = { name, phone, service, date, time };
+    const booking = { name, phone, service, date, time, telegramUsername };
     bookings.push(booking);
 
-    // Формируем таблицу для Telegram
-    const message = `Новая запись:\n| Имя | Телефон | Услуга | Дата | Время |\n|---|---|---|---|---|\n| ${name} | ${phone} | ${service} | ${date} | ${time} |`;
+    // Формируем сообщение о новой записи для Telegram
+    const newBookingMessage = `Новая запись:\n| Имя | Телефон | Ник Telegram | Услуга | Дата | Время |\n|---|---|---|---|---|---|\n| ${name} | ${phone} | ${telegramUsername} | ${service || 'не указана'} | ${date} | ${time} |`;
+
+    // Формируем таблицу занятости
+    const slotsStatusMessage = generateSlotsStatusTable(bookings);
+
     try {
+        // Отправляем сообщение о новой записи
         await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
             chat_id: TELEGRAM_CHAT_ID,
-            text: message,
+            text: newBookingMessage,
+            parse_mode: 'Markdown'
+        });
+        // Отправляем таблицу занятости
+        await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            chat_id: TELEGRAM_CHAT_ID,
+            text: slotsStatusMessage,
             parse_mode: 'Markdown'
         });
     } catch (e) {
@@ -46,6 +105,6 @@ app.post('/book', async (req, res) => {
     res.json({ success: true });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`);
+app.listen(process.env.PORT || PORT, () => {
+    console.log(`Server started on http://localhost:${process.env.PORT || PORT}`);
 }); 
