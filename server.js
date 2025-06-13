@@ -12,9 +12,13 @@ const TELEGRAM_CHAT_ID = '5103411502';
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('.')); // Serve static files from current directory
 
 // Хранилище записей (в памяти)
 let bookings = [];
+
+// Хранилище отзывов (в памяти - для демонстрации, в реальном приложении нужна БД)
+let reviews = [];
 
 const timeSlots = [
     '10:00', '11:00', '12:00', '13:00', '14:00',
@@ -69,14 +73,32 @@ app.get('/bookings', (req, res) => {
     res.json(bookings);
 });
 
+// Получить все отзывы
+app.get('/reviews', (req, res) => {
+    res.json(reviews);
+});
+
+// Добавить новый отзыв
+app.post('/review', (req, res) => {
+    const { name, text, rating } = req.body;
+    if (!name || !text || !rating) {
+        return res.status(400).json({ error: 'Имя, текст и оценка обязательны' });
+    }
+    const newReview = { name, text, rating, timestamp: new Date().toISOString() };
+    reviews.push(newReview);
+    res.status(201).json({ success: true, review: newReview });
+});
+
 // Добавить новую запись
 app.post('/book', async (req, res) => {
     const { name, phone, service, date, time, telegramUsername } = req.body;
-    // Проверка на занятость
+    
+    // Проверка на занятость конкретного времени
     const exists = bookings.find(b => b.date === date && b.time === time);
     if (exists) {
-        return res.status(409).json({ error: 'Слот уже занят' });
+        return res.status(409).json({ error: 'Это время уже занято' });
     }
+
     const booking = { name, phone, service, date, time, telegramUsername };
     bookings.push(booking);
 
@@ -102,6 +124,19 @@ app.post('/book', async (req, res) => {
     } catch (e) {
         console.error('Ошибка отправки в Telegram:', e.message);
     }
+    res.json({ success: true });
+});
+
+// Удалить запись
+app.delete('/bookings', (req, res) => {
+    const { date, time } = req.body;
+    const initialLength = bookings.length;
+    bookings = bookings.filter(b => !(b.date === date && b.time === time));
+    
+    if (bookings.length === initialLength) {
+        return res.status(404).json({ error: 'Запись не найдена' });
+    }
+    
     res.json({ success: true });
 });
 

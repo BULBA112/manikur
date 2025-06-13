@@ -1,7 +1,17 @@
-const API_URL = 'https://manicure-i2ex.onrender.com';
+const API_URL = 'http://localhost:3000';
 
 function fetchBookings() {
-    return fetch(`${API_URL}/bookings`).then(r => r.json());
+    console.log('Fetching bookings...');
+    return fetch(`${API_URL}/bookings`)
+        .then(r => r.json())
+        .then(data => {
+            console.log('Bookings fetched:', data);
+            return data;
+        })
+        .catch(error => {
+            console.error('Error fetching bookings:', error);
+            return [];
+        });
 }
 
 function formatDate(date) {
@@ -24,6 +34,7 @@ function getWeekRange(startDate) {
 }
 
 function createCalendar(bookings) {
+    console.log('Creating calendar with bookings:', bookings);
     const calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
     
@@ -73,17 +84,20 @@ function createCalendar(bookings) {
             cell.className = 'calendar-cell';
             
             const dateStr = formatDate(date);
-            const isBooked = bookings.some(b => b.date === dateStr && b.time === time);
+            const dayBookings = bookings.filter(b => b.date === dateStr && b.time === time);
+            const bookingCount = dayBookings.length;
             
-            if (isBooked) {
-                cell.classList.add('booked');
-                cell.textContent = 'Занято';
-            } else if (date < today) {
+            if (date < today) {
                 cell.classList.add('past');
                 cell.textContent = 'Недоступно';
             } else {
                 cell.classList.add('available');
-                cell.textContent = 'Свободно';
+                if (bookingCount > 0) {
+                    cell.classList.add('booked');
+                    cell.textContent = `Занято (${bookingCount})`;
+                } else {
+                    cell.textContent = 'Свободно';
+                }
                 cell.onclick = () => selectTimeSlot(dateStr, time);
             }
             
@@ -154,20 +168,58 @@ function updateBookingsTable(bookings) {
     });
 }
 
+// Функции для работы с отзывами
+async function loadReviews() {
+    try {
+        const response = await fetch(`${API_URL}/reviews`);
+        const reviews = await response.json();
+        const reviewsList = document.getElementById('reviewsList');
+        reviewsList.innerHTML = '';
+
+        if (reviews.length === 0) {
+            reviewsList.innerHTML = '<p style="text-align: center;">Пока нет отзывов. Будьте первым!</p>';
+            return;
+        }
+
+        reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).forEach(review => {
+            const reviewCard = document.createElement('div');
+            reviewCard.className = 'review-card';
+            reviewCard.innerHTML = `
+                <div class="reviewer-info">${review.name}</div>
+                <div class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                <p>${review.text}</p>
+                <div class="review-date">${new Date(review.timestamp).toLocaleDateString('ru-RU')}</div>
+            `;
+            reviewsList.appendChild(reviewCard);
+        });
+    } catch (error) {
+        console.error('Ошибка загрузки отзывов:', error);
+        const reviewsList = document.getElementById('reviewsList');
+        reviewsList.innerHTML = '<p style="color: red; text-align: center;">Не удалось загрузить отзывы.</p>';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('bookingForm');
     const success = document.getElementById('bookingSuccess');
     const error = document.getElementById('bookingError');
+    const reviewForm = document.getElementById('reviewForm');
+    const reviewMessage = document.getElementById('reviewMessage');
+
+    form.style.display = 'none'; // Скрываем форму при загрузке страницы
 
     // Обновляем календарь при загрузке страницы
     refreshCalendar();
+    // Загружаем отзывы при загрузке страницы
+    loadReviews();
 
-    // Устанавливаем минимальную дату как сегодня (это нужно для input date, но в нашем случае календарь управляет датами)
+    // Устанавливаем минимальную дату как сегодня
     const today = new Date().toISOString().split('T')[0];
     document.querySelector('input[name="date"]').min = today;
 
     // Обновляем данные каждые 30 секунд
     setInterval(refreshCalendar, 30000);
+    setInterval(loadReviews, 60000); // Обновляем отзывы каждую минуту
 
     // Привязываем кнопки навигации к функциям
     document.getElementById('prevWeekBtn').addEventListener('click', showPreviousWeek);
@@ -184,34 +236,59 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = formData.get('date');
         const time = formData.get('time');
         
-        // Получаем текущие бронирования для проверки
-        fetchBookings().then(currentBookings => {
-            const isBooked = currentBookings.some(b => b.date === date && b.time === time);
-            if (isBooked) {
-                error.textContent = 'Это время уже занято!';
-                error.style.display = 'block';
-                return;
-            }
-            
-            fetch(`${API_URL}/book`, {
+        fetch(`${API_URL}/book`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, telegramUsername, service, date, time })
+        })
+        .then(r => {
+            if (r.status === 409) throw new Error('Это время уже занято!');
+            return r.json();
+        })
+        .then(() => {
+            form.style.display = 'none';
+            success.style.display = 'block';
+            refreshCalendar(); // Обновляем календарь после успешной записи
+        })
+        .catch(err => {
+            error.textContent = err.message;
+            error.style.display = 'block';
+        });
+    });
+
+    // Обработчик отправки формы отзыва
+    reviewForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        reviewMessage.style.display = 'none';
+        reviewMessage.className = '';
+
+        const formData = new FormData(reviewForm);
+        const name = formData.get('reviewerName');
+        const text = formData.get('reviewText');
+        const rating = parseInt(formData.get('rating'));
+
+        try {
+            const response = await fetch(`${API_URL}/review`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, phone, telegramUsername, service, date, time })
-            })
-            .then(r => {
-                if (r.status === 409) throw new Error('Это время уже занято!');
-                return r.json();
-            })
-            .then(() => {
-                form.style.display = 'none';
-                success.style.display = 'block';
-                refreshCalendar(); // Обновляем календарь после успешной записи
-            })
-            .catch(err => {
-                error.textContent = err.message;
-                error.style.display = 'block';
+                body: JSON.stringify({ name, text, rating })
             });
-        });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Ошибка при отправке отзыва');
+            }
+
+            reviewMessage.textContent = 'Ваш отзыв успешно отправлен!';
+            reviewMessage.classList.add('success');
+            reviewMessage.style.display = 'block';
+            reviewForm.reset(); // Очищаем форму
+            loadReviews(); // Обновляем список отзывов
+        } catch (err) {
+            reviewMessage.textContent = err.message;
+            reviewMessage.classList.add('error');
+            reviewMessage.style.display = 'block';
+        }
     });
 
     // Инициализация карты Leaflet

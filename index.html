@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мастер по маникюру</title>
+    <title>Запись на маникюр</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
@@ -14,82 +14,116 @@
             <a href="#about">Обо мне</a>
             <a href="#services">Услуги</a>
             <a href="#portfolio">Портфолио</a>
-            <a href="#booking">Онлайн-запись</a>
-            <a href="#contacts">Контакты</a>
+            <a href="#booking-section">Онлайн-запись</a>
+            <a href="#reviews">Отзывы</a>
+            <a href="#map-section">Контакты</a>
         </nav>
     </header>
-    <section id="about">
-        <h2>Обо мне</h2>
-        <p>Давай те знакомиться. Зовут меня Екатерина,я являюсь мастером маникюра и педикюра. Приглашаю Вас ко мне в уютную студию.
-            В нашей студии ваш ждет
-            🔥стерильные инструменты
-            🔥одноразовые инструменты
-            🔥уютная обстановка
-            🔥вкусняшки
-            🔥чай
-            🔥кофе
-            Буду рада видеть Вас у себя.</p>
-    </section>
-    <section id="services">
-        <h2>Услуги</h2>
-        <ul>
-            <li>Маникюр с покрытием гель-лак</li>
-            <li>Педикюр обработка ногтей - гель лак</li>
-            <li>Педикюр обработка стоп - гель лак</li>
-            <li>Маникюр наращивания</li>
-            <li>маникюр с укреплением</li>
-        </ul>
-    </section>
-    <section id="portfolio">
-        <h2>Портфолио</h2>
-        <div class="portfolio-gallery">
-            <img src="" alt="Маникюр 1">
-            <img src="" alt="Маникюр 2">
-            <img src="" alt="Маникюр 3">
-        </div>
-    </section>
-    <section id="booking">
-        <h2>Онлайн-запись</h2>
-        <div class="calendar-navigation">
-            <button id="prevWeekBtn"><< Предыдущая неделя</button>
-            <div id="currentMonthYear" class="current-month-year"></div>
-            <button id="nextWeekBtn">Следующая неделя >></button>
-        </div>
-        <div id="calendar" class="booking-calendar"></div>
-        <form id="bookingForm" style="display: none;">
-            <h3>Заполните данные для записи</h3>
-            <label>Имя:<br><input type="text" name="name" required></label><br>
-            <label>Телефон:<br><input type="tel" name="phone" required></label><br>
-            <label>Ник в Telegram:<br><input type="text" name="telegramUsername" placeholder="@ваш_ник" required></label><br>
-            <label>Услуга:<br>
+
+    <main>
+        <section id="about">
+            <h2>Обо мне</h2>
+            <p>Давайте знакомиться! Меня зовут Анна, я являюсь сертифицированным мастером маникюра и педикюра. Приглашаю Вас в свою уютную студию, где Вас ждет:</p>
+            <ul>
+                <li>🔥 Стерильные инструменты</li>
+                <li>🔥 Одноразовые расходные материалы</li>
+                <li>🔥 Уютная обстановка</li>
+                <li>🔥 Вкусный чай/кофе и угощения</li>
+            </ul>
+            <p>Буду рада видеть Вас у себя!</p>
+        </section>
+
+        <section id="services">
+            <h2>Услуги</h2>
+            <ul>
+                <li>Маникюр с покрытием гель-лак (1300 руб.)</li>
+                <li>Педикюр обработка ногтей - гель лак (1400 руб.)</li>
+                <li>Педикюр обработка стоп - гель лак (1700 руб.)</li>
+                <li>Маникюр наращивание (от 1700 руб.)</li>
+                <li>Маникюр с укреплением (1500 руб.)</li>
+            </ul>
+        </section>
+
+        <section id="portfolio">
+            <h2>Портфолио</h2>
+            <div class="portfolio-gallery">
+                <img src="https://via.placeholder.com/150" alt="Маникюр 1">
+                <img src="https://via.placeholder.com/150" alt="Маникюр 2">
+                <img src="https://via.placeholder.com/150" alt="Маникюр 3">
+                <img src="https://via.placeholder.com/150" alt="Маникюр 4">
+                <img src="https://via.placeholder.com/150" alt="Маникюр 5">
+            </div>
+        </section>
+
+        <section class="calendar-section">
+            <div class="calendar-navigation">
+                <button id="prevWeekBtn"><< Предыдущая неделя</button>
+                <h2 id="currentMonthYear"></h2>
+                <button id="nextWeekBtn">Следующая неделя >></button>
+            </div>
+            <div id="calendar" class="booking-calendar"></div>
+        </section>
+
+        <section id="booking-section" class="booking-section">
+            <h2>Заполните данные для записи</h2>
+            <form id="bookingForm">
+                <input type="text" name="name" placeholder="Ваше имя" required>
+                <input type="tel" name="phone" placeholder="Телефон" required>
+                <input type="text" name="telegramUsername" placeholder="Telegram username">
                 <select name="service" required>
                     <option value="">Выберите услугу</option>
-                    <option value="Маникюр с покрытием гель-лак">Маникюр с покрытием гель-лак (1300 руб.)</option>
-                    <option value="Педикюр обработка ногтей - гель лак">Педикюр обработка ногтей - гель лак (1400 руб.)</option>
-                    <option value="Педикюр обработка стоп - гель лак">Педикюр обработка стоп - гель лак (1700 руб.)</option>
-                    <option value="Маникюр наращивания">Маникюр наращивания (от 1700 руб.)</option>
-                    <option value="маникюр с укреплением">Маникюр с укреплением (1500 руб.)</option>
+                    <option value="Маникюр с покрытием гель-лак">Маникюр с покрытием гель-лак</option>
+                    <option value="Педикюр обработка ногтей - гель лак">Педикюр обработка ногтей - гель лак</option>
+                    <option value="Педикюр обработка стоп - гель лак">Педикюр обработка стоп - гель лак</option>
+                    <option value="Маникюр наращивания">Маникюр наращивания</option>
+                    <option value="Маникюр с укреплением">Маникюр с укреплением</option>
                 </select>
-            </label><br>
-            <label>Дата:<br><input type="date" name="date" required readonly></label><br>
-            <label>Время:<br><select name="time" required></select></label><br>
-            <button type="submit">Записаться</button>
-        </form>
-        <div id="bookingError" style="color:red; display:none;"></div>
-        <div id="bookingSuccess" style="display:none;">Спасибо за запись! Я свяжусь с вами для подтверждения.</div>
-    </section>
-    <section id="contacts">
-        <h2>Контакты</h2>
-        <p>Телефон: <a href="tel:+79991234567">+7 (999) 123-45-67</a></p>
-        <p>Instagram: <a href="#" target="_blank">@anna_nails</a></p>
-        <p>Адрес: г. Москва, ул. Примерная, 1</p>
-    </section>
+                <input type="date" name="date" required style="display: none;"> <!-- Дата будет устанавливаться JS -->
+                <select name="time" required>
+                    <option value="">Выберите время</option>
+                    <!-- Временные слоты будут добавлены JS -->
+                </select>
+                <button type="submit">Записаться</button>
+            </form>
+
+            <div id="bookingSuccess" style="display: none;">
+                <h2>Спасибо за запись!</h2>
+                <p>Мы свяжемся с вами для подтверждения.</p>
+            </div>
+
+            <div id="bookingError" style="display: none;" class="error"></div>
+        </section>
+
+        <section id="map-section" class="map-section">
+            <h2>Как нас найти</h2>
+            <div id="map"></div>
+        </section>
+
+        <section id="reviews" class="reviews-section">
+            <h2>Отзывы наших клиентов</h2>
+            <div id="reviewsList" class="reviews-list"></div>
+
+            <h3>Оставить отзыв</h3>
+            <form id="reviewForm">
+                <input type="text" name="reviewerName" placeholder="Ваше имя" required>
+                <textarea name="reviewText" placeholder="Напишите ваш отзыв" rows="5" required></textarea>
+                <div class="rating">
+                    <input type="radio" id="star5" name="rating" value="5" required><label for="star5" title="5 звезд"></label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 звезды"></label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 звезды"></label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 звезды"></label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 звезда"></label>
+                </div>
+                <button type="submit">Отправить отзыв</button>
+                <div id="reviewMessage" style="display: none;"></div>
+            </form>
+        </section>
+    </main>
+
     <footer>
-        <p>Сайт делал @Terorist_bulba (телеграм) </p>
+        <p>Сайт разработан: @Terorist_bulba (Telegram)</p>
     </footer>
-    <div class="location-widget">
-        <div id="map" style="width: 100%; height: 100%;"></div>
-    </div>
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="booking.js"></script>
 </body>

@@ -1,0 +1,107 @@
+.calendar-widget {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.calendar-nav-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #007bff;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.calendar-nav-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: bold;
+    color: #666;
+    padding: 5px;
+    font-size: 0.9em;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.calendar-day:hover:not(.empty):not(.past) {
+    background-color: #f8f9fa;
+    border-color: #007bff;
+}
+
+.calendar-day.empty {
+    border: none;
+    cursor: default;
+}
+
+.calendar-day.past {
+    background-color: #f8f9fa;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.calendar-day.today {
+    border: 2px solid #007bff;
+}
+
+.calendar-day.booked {
+    background-color: #ffebee;
+    border-color: #ffcdd2;
+}
+
+.calendar-day.booked:hover:not(.past) {
+    background-color: #ffcdd2;
+}
+
+.calendar-day .date {
+    font-size: 1.1em;
+    margin-bottom: 2px;
+}
+
+.calendar-day .bookings-count {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.calendar-day.booked .bookings-count {
+    color: #d32f2f;
+} 

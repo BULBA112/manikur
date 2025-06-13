@@ -19,6 +19,9 @@ header h1 {
     margin: 0 0 10px 0;
     color: #a8005b;
 }
+nav {
+    margin-top: 15px;
+}
 nav a {
     color: #a8005b;
     text-decoration: none;
@@ -30,7 +33,7 @@ nav a:hover {
     color: #ff69b4;
 }
 section {
-    max-width: 700px;
+    max-width: 900px;
     margin: 40px auto;
     background: #fff;
     border-radius: 16px;
@@ -51,8 +54,8 @@ ul {
     justify-content: center;
 }
 .portfolio-gallery img {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     border-radius: 12px;
     box-shadow: 0 2px 8px #ffd6e6;
@@ -116,9 +119,11 @@ footer {
 
 .booking-calendar {
     margin: 20px 0;
-    border: 1px solid #ffb6d5;
+    border: 2px solid #a8005b;
     border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    min-height: 250px;
 }
 
 .calendar-header {
@@ -126,7 +131,6 @@ footer {
     grid-template-columns: 80px repeat(7, 1fr);
     background: #ffe0ef;
     border-bottom: 1px solid #ffb6d5;
-    width: 115%;
 }
 
 .calendar-time-placeholder {
@@ -157,7 +161,6 @@ footer {
     display: grid;
     grid-template-columns: 80px repeat(7, 1fr);
     border-bottom: 1px solid #ffb6d5;
-    width: 100%;
 }
 
 .calendar-row:last-child {
@@ -183,6 +186,7 @@ footer {
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.2s;
+    min-height: 40px;
 }
 
 .calendar-cell.available {
@@ -251,41 +255,216 @@ footer {
     }
 }
 
-.location-widget {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #ffb6d5;
-    color: #a8005b;
+.booking-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.calendar-container {
+    margin-bottom: 30px;
+}
+
+.time-slots-container {
+    margin-bottom: 30px;
+}
+
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.time-slot {
     padding: 10px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-size: 1.1em;
-    font-weight: bold;
-    z-index: 1000;
-    overflow: hidden;
-    width: 300px;
-    height: 200px;
+    text-align: center;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.location-widget iframe, .location-widget #map {
-    width: 100%;
-    height: 100%;
+.time-slot:hover {
+    background-color: #e9ecef;
+    border-color: #007bff;
+}
+
+#bookingForm {
+    background: white;
+    padding: 20px;
     border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#bookingForm h2 {
+    margin-bottom: 20px;
+}
+
+#bookingForm input,
+#bookingForm select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#bookingForm button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
     border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
 }
 
-.location-widget p {
-    margin: 0;
+#bookingForm button:hover {
+    background: #0056b3;
 }
 
-@media (max-width: 800px) {
-    .location-widget {
-        bottom: 10px;
-        right: 10px;
-        padding: 5px;
-        font-size: 0.9em;
-        width: 250px;
-        height: 150px;
-    }
+#bookingSuccess {
+    text-align: center;
+    padding: 20px;
+    background: #d4edda;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.error {
+    color: #dc3545;
+    padding: 10px;
+    background: #f8d7da;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.map-section {
+    margin-top: 40px;
+}
+
+#map {
+    height: 400px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.reviews-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reviews-section h2, .reviews-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.reviews-list {
+    margin-bottom: 30px;
+}
+
+.review-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.review-card p {
+    margin-bottom: 5px;
+}
+
+.review-card .reviewer-info {
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.review-card .review-date {
+    font-size: 0.8em;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.review-card .review-rating {
+    color: #ffc107; /* Yellow for stars */
+}
+
+#reviewForm input[type="text"],
+#reviewForm textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#reviewForm button {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+}
+
+#reviewForm button:hover {
+    background: #218838;
+}
+
+.rating {
+    display: flex;
+    justify-content: center;
+    flex-direction: row-reverse;
+    margin-bottom: 15px;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating label {
+    font-size: 2em;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+    color: #ffc107;
+}
+
+.rating input:checked + label:hover ~ label,
+.rating input:checked ~ label:hover ~ label {
+    color: #ffc107;
+}
+
+#reviewMessage {
+    text-align: center;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+#reviewMessage.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+#reviewMessage.error {
+    background: #f8d7da;
+    color: #721c24;
 } 
