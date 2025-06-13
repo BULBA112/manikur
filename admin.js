@@ -13,6 +13,8 @@ const bookingsList = document.getElementById('bookingsList');
 const totalBookings = document.getElementById('totalBookings');
 const todayBookings = document.getElementById('todayBookings');
 
+const API_URL = ''; // Изменено на пустую строку для относительного пути
+
 // Check if user is already logged in
 if (localStorage.getItem('adminLoggedIn')) {
     showAdminPanel();
@@ -153,7 +155,7 @@ function showDayBookings(date, bookings) {
 async function loadBookings() {
     console.log('Loading bookings...');
     try {
-        const response = await fetch('http://localhost:3000/bookings');
+        const response = await fetch(API_URL + '/bookings');
         const bookings = await response.json();
         console.log('Bookings loaded:', bookings);
         
@@ -213,7 +215,7 @@ async function handleDelete(e) {
 
     const [date, time] = e.target.dataset.id.split('-');
     try {
-        const response = await fetch('http://localhost:3000/bookings', {
+        const response = await fetch(API_URL + '/bookings', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -246,7 +248,7 @@ newBookingForm.addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await fetch('http://localhost:3000/book', {
+        const response = await fetch(API_URL + '/book', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
